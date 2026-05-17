@@ -1,4 +1,5 @@
 import { Tabs } from 'expo-router';
+import { Text } from 'react-native';
 import { Colors } from '../../constants/Colors';
 
 export default function TabLayout() {
@@ -67,5 +68,5 @@ export default function TabLayout() {
 }
 
 const TabIcon = ({ children }: { children: string }) => (
-  <span style={{ fontSize: 24 }}>{children}</span>
+  <Text style={{ fontSize: 24 }}>{children}</Text>
 );
