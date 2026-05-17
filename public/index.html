@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Connect - Mobile App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0052CC 0%, #6B8DD6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #0052CC, #FFA500);
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+        h1 {
+            color: #0052CC;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #757575;
+            font-size: 18px;
+            font-weight: normal;
+            margin-bottom: 30px;
+        }
+        .info {
+            background: #F5F5F5;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .info h3 {
+            color: #0052CC;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .step {
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        .step:before {
+            content: "📱";
+            position: absolute;
+            left: 0;
+            font-size: 20px;
+        }
+        .step strong {
+            color: #212121;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .step p {
+            color: #757575;
+            line-height: 1.6;
+        }
+        .features {
+            margin: 30px 0;
+            text-align: left;
+        }
+        .feature {
+            padding: 10px 0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .feature:last-child {
+            border-bottom: none;
+        }
+        .feature span {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .note {
+            background: #FFF3E0;
+            padding: 15px;
+            border-radius: 8px;
+            color: #E65100;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .links {
+            margin-top: 30px;
+        }
+        a {
+            display: inline-block;
+            background: #0052CC;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 82, 204, 0.3);
+        }
+        .github {
+            background: #24292e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">CC</div>
+        <h1>Community Connect</h1>
+        <h2>Mobile App for Community Management</h2>
+
+        <div class="info">
+            <h3>📱 How to Test This App</h3>
+
+            <div class="step">
+                <strong>Step 1: Install Expo Go</strong>
+                <p>Download "Expo Go" app from App Store (iPhone) or Play Store (Android)</p>
+            </div>
+
+            <div class="step">
+                <strong>Step 2: Clone Repository</strong>
+                <p>git clone https://github.com/saprem/community-connect-app.git</p>
+            </div>
+
+            <div class="step">
+                <strong>Step 3: Install & Run</strong>
+                <p>npm install && npx expo start</p>
+            </div>
+
+            <div class="step">
+                <strong>Step 4: Scan QR Code</strong>
+                <p>Open Expo Go app and scan the QR code from your terminal</p>
+            </div>
+        </div>
+
+        <div class="features">
+            <h3 style="color: #0052CC; margin-bottom: 15px;">✨ Features</h3>
+            <div class="feature">
+                <span>🚶</span><strong>Visitor Management</strong> - QR codes & approvals
+            </div>
+            <div class="feature">
+                <span>💬</span><strong>Community Chat</strong> - Events & discussions
+            </div>
+            <div class="feature">
+                <span>💰</span><strong>Payment Tracking</strong> - Maintenance & bills
+            </div>
+            <div class="feature">
+                <span>📋</span><strong>Notice Board</strong> - Announcements & updates
+            </div>
+            <div class="feature">
+                <span>🔔</span><strong>Smart Notifications</strong> - Real-time alerts
+            </div>
+        </div>
+
+        <div class="note">
+            ⚠️ This is a React Native mobile app. It requires Expo Go app on your phone to test. Web version is not available for this type of app.
+        </div>
+
+        <div class="links">
+            <a href="https://github.com/saprem/community-connect-app" target="_blank" class="github">
+                View on GitHub
+            </a>
+            <a href="https://expo.dev/go" target="_blank">
+                Download Expo Go
+            </a>
+        </div>
+
+        <p style="margin-top: 30px; color: #757575; font-size: 14px;">
+            Built with React Native, Expo & TypeScript<br>
+            Inspired by MyGate
+        </p>
+    </div>
+</body>
+</html>

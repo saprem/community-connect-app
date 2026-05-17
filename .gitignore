@@ -41,3 +41,4 @@ GoogleService-Info.plist
 .expo/
 .expo-shared/
 web-build/
+.vercel

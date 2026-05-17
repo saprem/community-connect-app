@@ -1,7 +1,4 @@
 {
-  "buildCommand": "npm run web:build",
-  "devCommand": "npm run web",
-  "installCommand": "npm install",
-  "framework": null,
-  "outputDirectory": "dist"
+  "buildCommand": "echo 'This is a React Native app. Please use Expo Go on your phone to test!'",
+  "outputDirectory": "public"
 }
