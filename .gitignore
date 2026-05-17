@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.expo/
+.expo-shared/
+
+# Build
+dist/
+build/
+.next/
+out/
+
+# Debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Local env files
+.env*.local
+.env
+
+# OS
+.DS_Store
+*.pem
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Temporary
+*.log
+*.tmp
+
+# Firebase
+google-services.json
+GoogleService-Info.plist
+
+# Expo
+.expo/
+.expo-shared/
+web-build/
