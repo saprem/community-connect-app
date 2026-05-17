@@ -72,11 +72,16 @@ export const getVisitors = async (userId: string, limitCount = 20) => {
   const q = query(
     visitorsRef,
     where('hostUserId', '==', userId),
-    orderBy('createdAt', 'desc'),
     limit(limitCount)
   );
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const visitors = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  // Sort by createdAt on client side to avoid index requirement
+  return visitors.sort((a: any, b: any) => {
+    const aTime = a.createdAt?.toMillis ? a.createdAt.toMillis() : new Date(a.createdAt || 0).getTime();
+    const bTime = b.createdAt?.toMillis ? b.createdAt.toMillis() : new Date(b.createdAt || 0).getTime();
+    return bTime - aTime;
+  });
 };
 
 export const updateVisitor = async (visitorId: string, visitorData: Partial<Visitor>) => {
@@ -86,6 +91,12 @@ export const updateVisitor = async (visitorId: string, visitorData: Partial<Visi
     ...visitorData,
     updatedAt: Timestamp.now(),
   });
+};
+
+export const deleteVisitor = async (visitorId: string) => {
+  if (!db) throw new Error('Firestore not initialized');
+  const visitorRef = doc(db, 'visitors', visitorId);
+  await deleteDoc(visitorRef);
 };
 
 // Daily Help (Helper) Management
@@ -150,11 +161,12 @@ export const getPayments = async (userId: string, limitCount = 20) => {
   const q = query(
     paymentsRef,
     where('userId', '==', userId),
-    orderBy('dueDate', 'desc'),
     limit(limitCount)
   );
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const payments = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  // Sort by dueDate on client side to avoid index requirement
+  return payments.sort((a: any, b: any) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime());
 };
 
 export const updatePayment = async (paymentId: string, paymentData: Partial<Payment>) => {

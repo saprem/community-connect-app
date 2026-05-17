@@ -41,14 +41,22 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.section}>
-        <MenuItem icon="👤" title="Personal Information" onPress={() => {}} />
+        <MenuItem
+          icon="👤"
+          title="Personal Information"
+          onPress={() => router.push('/profile/personal-info' as any)}
+        />
         <MenuItem icon="🏠" title="Residence Details" onPress={() => {}} />
-        <MenuItem icon="👨‍👩‍👧" title="Family Members" onPress={() => {}} />
+        <MenuItem
+          icon="👨‍👩‍👧"
+          title="Family Members"
+          onPress={() => router.push('/profile/family-members' as any)}
+        />
         <MenuItem icon="🚗" title="Vehicles" onPress={() => {}} />
         <MenuItem
           icon="🧹"
           title="Daily Help"
-          onPress={() => router.push('/daily-help/index' as any)}
+          onPress={() => router.push('/daily-help' as any)}
         />
         <MenuItem icon="🔔" title="Notifications" onPress={() => {}} />
         <MenuItem icon="⚙️" title="Settings" onPress={() => {}} />

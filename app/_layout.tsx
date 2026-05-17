@@ -15,6 +15,13 @@ export default function RootLayout() {
           <Stack.Screen name="auth/google" />
           <Stack.Screen name="auth/profile-setup" />
           <Stack.Screen name="daily-help/index" />
+          <Stack.Screen name="daily-help/add" />
+          <Stack.Screen name="daily-help/[id]" />
+          <Stack.Screen name="visitors/index" />
+          <Stack.Screen name="visitors/add" />
+          <Stack.Screen name="visitors/[id]" />
+          <Stack.Screen name="payments/index" />
+          <Stack.Screen name="payments/add" />
           <Stack.Screen name="(tabs)" />
         </Stack>
       </SafeAreaProvider>

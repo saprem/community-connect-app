@@ -111,25 +111,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithPhone = async (phone: string) => {
     // TODO: Integrate with Firebase Phone Auth
-    // For now, simulate OTP send
+    // For now, simulate OTP send with a mock OTP: 123456
     setPendingPhone(phone);
     // In production, this would send SMS via Firebase
-    console.log('OTP sent to:', phone);
+    console.log('🔐 OTP sent to:', phone);
+    console.log('📱 For testing, use OTP: 123456');
   };
 
   const verifyOTP = async (otp: string) => {
     // TODO: Verify OTP with Firebase
-    // For now, accept any 6-digit code
-    if (otp.length === 6) {
+    // For testing: Accept "123456" or any 6-digit code
+    if (otp.length !== 6) {
+      throw new Error('OTP must be 6 digits');
+    }
+
+    // For testing, accept 123456 or any 6-digit code
+    if (otp === '123456' || otp.length === 6) {
       const newUser: User = {
         id: Date.now().toString(),
         phone: pendingPhone,
-        verified: true,
+        verified: false, // Will be set to true after profile setup
       };
       await saveUser(newUser);
       setPendingPhone('');
+      console.log('✅ OTP verified successfully!');
     } else {
-      throw new Error('Invalid OTP');
+      throw new Error('Invalid OTP. Use 123456 for testing.');
     }
   };
 

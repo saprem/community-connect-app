@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Colors, Spacing, FontSizes } from '../../constants/Colors';
 
 export default function HomeScreen() {
+  const router = useRouter();
   return (
     <ScrollView style={styles.container}>
       {/* Welcome Banner */}
@@ -16,26 +18,41 @@ export default function HomeScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.quickActions}>
-          <QuickActionCard
-            icon="🚶"
-            title="Add Visitor"
-            color={Colors.primary}
-          />
-          <QuickActionCard
-            icon="💳"
-            title="Pay Dues"
-            color={Colors.success}
-          />
-          <QuickActionCard
-            icon="📋"
-            title="Notices"
-            color={Colors.warning}
-          />
-          <QuickActionCard
-            icon="🎫"
-            title="Book Facility"
-            color={Colors.info}
-          />
+          <TouchableOpacity
+            style={[styles.quickActionCard, { borderColor: Colors.primary }]}
+            onPress={() => router.push('/visitors/add' as any)}
+          >
+            <Text style={styles.quickActionIcon}>🚶</Text>
+            <Text style={styles.quickActionTitle}>Add Visitor</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.quickActionCard, { borderColor: Colors.success }]}
+            onPress={() => router.push('/(tabs)/payments' as any)}
+          >
+            <Text style={styles.quickActionIcon}>💳</Text>
+            <Text style={styles.quickActionTitle}>Pay Dues</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.quickActionCard, { borderColor: Colors.warning }]}
+            onPress={() => router.push('/daily-help' as any)}
+          >
+            <Text style={styles.quickActionIcon}>🧹</Text>
+            <Text style={styles.quickActionTitle}>Daily Help</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.quickActionCard, { borderColor: Colors.info }]}
+            onPress={() => router.push('/visitors' as any)}
+          >
+            <Text style={styles.quickActionIcon}>👥</Text>
+            <Text style={styles.quickActionTitle}>My Visitors</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.quickActionCard, { borderColor: Colors.danger }]}
+            onPress={() => router.push('/security' as any)}
+          >
+            <Text style={styles.quickActionIcon}>🔒</Text>
+            <Text style={styles.quickActionTitle}>Security</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -103,13 +120,6 @@ export default function HomeScreen() {
     </ScrollView>
   );
 }
-
-const QuickActionCard = ({ icon, title, color }: { icon: string; title: string; color: string }) => (
-  <TouchableOpacity style={[styles.quickActionCard, { borderColor: color }]}>
-    <Text style={styles.quickActionIcon}>{icon}</Text>
-    <Text style={styles.quickActionTitle}>{title}</Text>
-  </TouchableOpacity>
-);
 
 const ActivityItem = ({ icon, title, time }: { icon: string; title: string; time: string }) => (
   <View style={styles.activityItem}>

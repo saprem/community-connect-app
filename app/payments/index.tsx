@@ -105,6 +105,7 @@ export default function PaymentsScreen() {
     const transactionNote = `${payment.category}-${payment.id.substring(0, 8)}`;
 
     // UPI deep link format as per NPCI specification
+    // Format: upi://pay?pa=<UPI_ID>&pn=<NAME>&am=<AMOUNT>&tn=<NOTE>&cu=<CURRENCY>
     const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&tn=${encodeURIComponent(transactionNote)}&cu=INR`;
 
     Alert.alert(
@@ -119,6 +120,8 @@ export default function PaymentsScreen() {
               const canOpen = await Linking.canOpenURL(upiUrl);
               if (canOpen) {
                 await Linking.openURL(upiUrl);
+                // Note: We can't automatically verify payment completion
+                // User needs to manually update or you need a payment gateway webhook
                 setTimeout(() => {
                   Alert.alert(
                     'Payment Initiated',
@@ -188,25 +191,21 @@ export default function PaymentsScreen() {
   const totalPending = pendingPayments.reduce((sum, p) => sum + p.amount, 0);
   const totalOverdue = overduePayments.reduce((sum, p) => sum + p.amount, 0);
 
-  if (loading) {
-    return (
-      <View style={[styles.container, styles.centered]}>
-        <Text style={styles.loadingText}>Loading payments...</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Text style={styles.backButton}>←</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Payments</Text>
+        <View style={styles.placeholder} />
+      </View>
+
       <ScrollView
         style={styles.scrollView}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Payments</Text>
-        </View>
-
         {/* Stats Cards */}
         <View style={styles.statsContainer}>
           <View style={[styles.statCard, { backgroundColor: Colors.warning + '20' }]}>
@@ -292,7 +291,11 @@ export default function PaymentsScreen() {
         <View style={styles.listContainer}>
           {filteredPayments.length > 0 ? (
             filteredPayments.map((payment) => (
-              <View key={payment.id} style={styles.paymentCard}>
+              <TouchableOpacity
+                key={payment.id}
+                style={styles.paymentCard}
+                onPress={() => router.push(`/payments/${payment.id}` as any)}
+              >
                 <View style={styles.paymentHeader}>
                   <View style={styles.categoryBadge}>
                     <Text style={styles.categoryIcon}>
@@ -339,12 +342,15 @@ export default function PaymentsScreen() {
                 {payment.status !== 'paid' && (
                   <TouchableOpacity
                     style={styles.payButton}
-                    onPress={() => handlePayViaUPI(payment)}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      handlePayViaUPI(payment);
+                    }}
                   >
                     <Text style={styles.payButtonText}>Pay via UPI →</Text>
                   </TouchableOpacity>
                 )}
-              </View>
+              </TouchableOpacity>
             ))
           ) : (
             <View style={styles.emptyState}>
@@ -378,28 +384,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: FontSizes.lg,
-    color: Colors.textSecondary,
-  },
   scrollView: {
     flex: 1,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: Spacing.lg,
-    paddingTop: Spacing.xxl,
     backgroundColor: Colors.surface,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
+  backButton: {
+    fontSize: 28,
+    color: Colors.text,
+  },
   headerTitle: {
-    fontSize: FontSizes.xxl,
+    fontSize: FontSizes.xl,
     fontWeight: 'bold',
     color: Colors.text,
+  },
+  placeholder: {
+    width: 28,
   },
   statsContainer: {
     flexDirection: 'row',
