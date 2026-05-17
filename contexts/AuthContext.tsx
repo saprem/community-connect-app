@@ -1,5 +1,9 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../services/firebase.config';
+import { signInWithEmail as firebaseSignInWithEmail, signUpWithEmail, signOut as firebaseSignOut } from '../services/firebaseAuth';
+import { createUser, getUser, updateUser } from '../services/firestoreHelpers';
 
 interface User {
   id: string;
@@ -39,7 +43,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [pendingPhone, setPendingPhone] = useState<string>('');
 
   useEffect(() => {
-    loadUser();
+    // If Firebase is configured, listen to auth state changes
+    if (auth) {
+      const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        if (firebaseUser) {
+          // Load user data from Firestore
+          try {
+            const userData = await getUser(firebaseUser.uid);
+            if (userData) {
+              setUser({
+                id: firebaseUser.uid,
+                email: firebaseUser.email || '',
+                phone: userData.phone || '',
+                name: userData.name || firebaseUser.displayName || '',
+                communityId: userData.communityId,
+                role: userData.role,
+                verified: userData.verified || false,
+              } as User);
+            } else {
+              // Create basic user profile from Firebase auth
+              const newUser: User = {
+                id: firebaseUser.uid,
+                email: firebaseUser.email || '',
+                phone: '',
+                name: firebaseUser.displayName || '',
+                verified: false,
+              };
+              setUser(newUser);
+            }
+          } catch (error) {
+            console.error('Error loading user data:', error);
+          }
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      });
+
+      return () => unsubscribe();
+    } else {
+      // Fallback to AsyncStorage for mock mode
+      loadUser();
+    }
   }, []);
 
   const loadUser = async () => {
@@ -102,31 +147,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    // TODO: Integrate with Firebase Email Auth
-    const newUser: User = {
-      id: Date.now().toString(),
-      phone: '',
-      email,
-      verified: false,
-    };
-    await saveUser(newUser);
+    if (auth) {
+      // Use real Firebase authentication
+      await firebaseSignInWithEmail(email, password);
+      // User state will be updated by onAuthStateChanged listener
+    } else {
+      // Mock mode for development without Firebase
+      const newUser: User = {
+        id: Date.now().toString(),
+        phone: '',
+        email,
+        verified: false,
+      };
+      await saveUser(newUser);
+    }
   };
 
   const signUp = async (email: string, password: string, phone: string) => {
-    // TODO: Integrate with Firebase Auth
-    const newUser: User = {
-      id: Date.now().toString(),
-      phone,
-      email,
-      verified: false,
-    };
-    await saveUser(newUser);
+    if (auth) {
+      // Use real Firebase authentication
+      const firebaseUser = await signUpWithEmail(email, password);
+      // Create user profile in Firestore
+      await createUser(firebaseUser.uid, {
+        id: firebaseUser.uid,
+        phone,
+        email,
+        verified: false,
+      } as any);
+      // User state will be updated by onAuthStateChanged listener
+    } else {
+      // Mock mode for development without Firebase
+      const newUser: User = {
+        id: Date.now().toString(),
+        phone,
+        email,
+        verified: false,
+      };
+      await saveUser(newUser);
+    }
   };
 
   const signOut = async () => {
     try {
-      await AsyncStorage.removeItem('user');
-      setUser(null);
+      if (auth) {
+        // Use real Firebase sign out
+        await firebaseSignOut();
+      } else {
+        // Mock mode
+        await AsyncStorage.removeItem('user');
+        setUser(null);
+      }
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -134,8 +204,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateProfile = async (data: Partial<User>) => {
     if (user) {
-      const updatedUser = { ...user, ...data };
-      await saveUser(updatedUser);
+      if (auth) {
+        // Update in Firestore
+        await updateUser(user.id, data as any);
+        // Update local state
+        setUser({ ...user, ...data });
+      } else {
+        // Mock mode - update AsyncStorage
+        const updatedUser = { ...user, ...data };
+        await saveUser(updatedUser);
+      }
     }
   };
 
