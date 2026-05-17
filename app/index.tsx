@@ -1,10 +1,26 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../contexts/AuthContext';
 import { Colors, Spacing, FontSizes } from '../constants/Colors';
 
 export default function WelcomeScreen() {
   const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace('/(tabs)/home');
+    }
+  }, [user, loading]);
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -29,7 +45,7 @@ export default function WelcomeScreen() {
       <View style={styles.actionsContainer}>
         <TouchableOpacity
           style={styles.primaryButton}
-          onPress={() => router.push('/(tabs)/home' as any)}
+          onPress={() => router.push('/auth/phone')}
         >
           <Text style={styles.primaryButtonText}>Get Started</Text>
         </TouchableOpacity>
